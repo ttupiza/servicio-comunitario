@@ -47,7 +47,6 @@ class Beneficiario(models.Model):
     def _str_(self):
         return self.nombre_beneficiario
 
-
 class Familiar(models.Model):
     nombre_familiar=models.CharField(max_length=15)
     apellido_familiar=models.CharField(max_length=15)
