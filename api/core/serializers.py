@@ -27,7 +27,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         return Usuario.objects.create(**validated_data)
-      
 
 
 class MedicamentoSerializer(serializers.ModelSerializer):

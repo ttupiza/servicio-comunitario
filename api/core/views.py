@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from rest_framework import viewsets, status
+from rest_framework.response import Response
 from rest_framework import viewsets
 from .models import Usuario
 from .serializers import UsuarioSerializer
@@ -31,6 +33,33 @@ from .serializers import CalleSerializer
 class PersonalViewSet(viewsets.ModelViewSet):
     queryset = Personal.objects.all()
     serializer_class = PersonalSerializer
+
+    def create(self, request, *args, **kwargs):
+        # Se recibe el ID del usuario al que se va a asociar el perfil
+        usuario_id = request.data.get('usuario_id')
+
+        if not usuario_id:
+            return Response({'error': 'Debe enviar el usuario_id'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            usuario = Usuario.objects.get(id=usuario_id)
+        except Usuario.DoesNotExist:
+            return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Creamos el perfil
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        personal = serializer.save()
+
+        # Asociamos el perfil al usuario
+        usuario.fk_personal = personal
+        usuario.save()
+
+        return Response({
+            'mensaje': 'Perfil creado y asociado correctamente',
+            'usuario': UsuarioSerializer(usuario).data
+        }, status=status.HTTP_201_CREATED)
+
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
