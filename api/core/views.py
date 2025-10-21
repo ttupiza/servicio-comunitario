@@ -77,8 +77,6 @@ class BeneficiarioViewSet(viewsets.ModelViewSet):
     queryset = Beneficiario.objects.all()
     serializer_class = BeneficiarioSerializer
 
-
-
 class FamiliarViewSet(viewsets.ModelViewSet):
     queryset = Familiar.objects.all()
     serializer_class = FamiliarSerializer
